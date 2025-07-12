@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react'
-import { Upload, Info, Search, Dna, Globe2, Activity } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Info, Search, Dna, Globe2, Activity } from 'lucide-react'
 import { parseAncestryCSV, groupByChromosome, calculateAncestryPercentages, type AncestrySegment } from './utils/csvParser'
 import { ChromosomeVisualization } from './components/ChromosomeVisualization'
 import { AncestryPieChart } from './components/AncestryPieChart'
@@ -10,27 +10,27 @@ function App() {
   const [segments, setSegments] = useState<AncestrySegment[]>([])
   const [selectedAncestry, setSelectedAncestry] = useState<string | null>(null)
   const [selectedChromosome, setSelectedChromosome] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const text = await file.text()
-      const parsedSegments = parseAncestryCSV(text)
-      setSegments(parsedSegments)
-    } catch (err) {
-      setError('Failed to parse CSV file. Please ensure it\'s a valid 23andMe ancestry composition file.')
-      console.error(err)
-    } finally {
-      setIsLoading(false)
+  // Automatically load the data on mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const response = await fetch('/sample-data.csv')
+        const text = await response.text()
+        const parsedSegments = parseAncestryCSV(text)
+        setSegments(parsedSegments)
+      } catch (err) {
+        setError('Failed to load genetic data.')
+        console.error(err)
+      } finally {
+        setIsLoading(false)
+      }
     }
+    loadData()
   }, [])
+
 
   const groupedByChromosome = groupByChromosome(segments)
   const ancestryPercentages = calculateAncestryPercentages(segments)
@@ -69,49 +69,25 @@ function App() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {segments.length === 0 ? (
+        {isLoading ? (
           <div className="flex items-center justify-center min-h-[60vh]">
             <div className="backdrop-blur-md bg-white/10 rounded-3xl p-12 text-center max-w-2xl w-full border border-white/20 shadow-2xl">
               <div className="mb-8 relative inline-block">
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-3xl opacity-50"></div>
                 <div className="relative bg-gradient-to-br from-purple-500 to-pink-500 rounded-full p-6">
-                  <Upload className="w-16 h-16 text-white" />
+                  <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent"></div>
                 </div>
               </div>
-              
-              <h2 className="text-3xl font-bold text-white mb-4">Upload Your Genetic Data</h2>
-              <p className="text-purple-200 mb-8 text-lg">
-                Drop your 23andMe ancestry composition CSV file to begin exploring your genetic heritage
-              </p>
-              
-              <label className="cursor-pointer group">
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  disabled={isLoading}
-                />
-                <span className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105 group-hover:from-purple-500 group-hover:to-pink-500">
-                  {isLoading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="w-5 h-5" />
-                      Choose File
-                    </>
-                  )}
-                </span>
-              </label>
-              
-              {error && (
-                <div className="mt-6 p-4 bg-red-500/20 backdrop-blur-md border border-red-500/50 text-red-200 rounded-xl">
-                  {error}
-                </div>
-              )}
+              <h2 className="text-3xl font-bold text-white mb-4">Loading Your Genetic Data</h2>
+              <p className="text-purple-200 text-lg">Analyzing your ancestry composition...</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="backdrop-blur-md bg-white/10 rounded-3xl p-12 text-center max-w-2xl w-full border border-white/20 shadow-2xl">
+              <div className="p-4 bg-red-500/20 backdrop-blur-md border border-red-500/50 text-red-200 rounded-xl">
+                {error}
+              </div>
             </div>
           </div>
         ) : (
