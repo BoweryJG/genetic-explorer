@@ -324,10 +324,7 @@ function App() {
                       />
                     )}
                     {activeVisualization === 'particles' && (
-                      <AncestryParticleFlow
-                        ancestryData={ancestryPercentages}
-                        selectedAncestry={selectedAncestry || undefined}
-                      />
+                      <AncestryParticleFlow />
                     )}
                   </React.Suspense>
                 </div>

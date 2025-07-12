@@ -22,6 +22,7 @@ import { useControls } from 'leva'
 interface ChromosomeViewer3DProps {
   segments: AncestrySegment[]
   selectedChromosome?: string | null
+  onChromosomeSelect?: (chromosome: string | null) => void
 }
 
 // Chromosome data with proper lengths and centromere positions
@@ -357,7 +358,8 @@ function ChromosomeScene({
 // Main component
 export function ChromosomeViewer3D({ 
   segments, 
-  selectedChromosome 
+  selectedChromosome,
+  onChromosomeSelect 
 }: ChromosomeViewer3DProps) {
   const [showLegend, setShowLegend] = useState(true)
   
@@ -368,10 +370,10 @@ export function ChromosomeViewer3D({
   }, [segments])
 
   // Leva controls for debugging/customization
-  const { 
-    showHeatMap, 
-    glowIntensity,
-    cameraAutoRotate 
+  const {
+    // showHeatMap, 
+    // glowIntensity,
+    // cameraAutoRotate 
   } = useControls('Visualization', {
     showHeatMap: true,
     glowIntensity: { value: 1.5, min: 0, max: 3, step: 0.1 },

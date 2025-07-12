@@ -1,11 +1,22 @@
-import { HTMLAttributes, forwardRef } from "react"
+import React from "react"
+import type { HTMLAttributes } from "react"
+import { forwardRef } from "react"
 
 const TooltipProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>
 
 const Tooltip = ({ children }: { children: React.ReactNode }) => <>{children}</>
 
-const TooltipTrigger = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  (props, ref) => <div ref={ref} {...props} />
+interface TooltipTriggerProps extends HTMLAttributes<HTMLDivElement> {
+  asChild?: boolean;
+}
+
+const TooltipTrigger = forwardRef<HTMLDivElement, TooltipTriggerProps>(
+  ({ asChild, children, ...props }, ref) => {
+    if (asChild && React.isValidElement(children)) {
+      return React.cloneElement(children as any, { ...props, ref });
+    }
+    return <div ref={ref} {...props}>{children}</div>;
+  }
 )
 TooltipTrigger.displayName = "TooltipTrigger"
 

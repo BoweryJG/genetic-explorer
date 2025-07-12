@@ -1,7 +1,14 @@
-import { HTMLAttributes, forwardRef } from "react"
+import type { HTMLAttributes } from "react"
+import { forwardRef } from "react"
 
-const Tabs = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement> & { defaultValue?: string }>(
-  ({ className = "", ...props }, ref) => (
+interface TabsProps extends HTMLAttributes<HTMLDivElement> {
+  defaultValue?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
+}
+
+const Tabs = forwardRef<HTMLDivElement, TabsProps>(
+  ({ className = "", value, onValueChange, ...props }, ref) => (
     <div
       ref={ref}
       className={`${className}`}
@@ -22,8 +29,13 @@ const TabsList = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 )
 TabsList.displayName = "TabsList"
 
-const TabsTrigger = forwardRef<HTMLButtonElement, HTMLAttributes<HTMLButtonElement> & { value: string }>(
-  ({ className = "", ...props }, ref) => (
+interface TabsTriggerProps extends HTMLAttributes<HTMLButtonElement> {
+  value: string;
+  disabled?: boolean;
+}
+
+const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
+  ({ className = "", disabled, ...props }, ref) => (
     <button
       ref={ref}
       className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm ${className}`}

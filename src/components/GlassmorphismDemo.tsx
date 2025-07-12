@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import { Dna, Heart, Users, Globe2, Activity } from 'lucide-react'
 
 /**

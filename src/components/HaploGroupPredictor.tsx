@@ -5,6 +5,7 @@ import { Info, MapPin, Clock, Dna, Users, Globe2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Progress } from './ui/progress';
 import { Badge } from './ui/badge';
+import { scaleTime } from 'd3-scale';
 import type { 
   HaplogroupPrediction as HaploGroupPrediction,
   HaplogroupData as HaploGroupData 
@@ -20,8 +21,6 @@ interface HaploGroupPredictorProps {
   segments: AncestrySegment[];
   gender?: 'male' | 'female' | 'unknown';
 }
-
-const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
 const HaploGroupPredictor: React.FC<HaploGroupPredictorProps> = ({ 
   segments, 
@@ -122,6 +121,7 @@ const HaploGroupPredictor: React.FC<HaploGroupPredictorProps> = ({
               </div>
             ))}
           </div>
+        </div>
       </div>
     );
   };

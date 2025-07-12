@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { ChromosomeViewer3D } from './ChromosomeViewer3D'
 import { type AncestrySegment } from '../utils/csvParser'
 
