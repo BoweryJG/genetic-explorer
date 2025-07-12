@@ -265,7 +265,6 @@ export class BraveSearchService {
 
   // Utility method to clear expired cache entries
   clearExpiredCache(): void {
-    const now = Date.now()
     for (const [key, entry] of this.cache.entries()) {
       if (!this.isCacheValid(entry)) {
         this.cache.delete(key)

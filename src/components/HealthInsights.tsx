@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   Heart, 
   AlertTriangle, 
@@ -20,20 +20,17 @@ import {
   calculateDrugMetabolism,
   calculatePhysicalTraits,
   calculateBeneficialVariants,
-  calculateMetabolicTraits,
-  HealthRisk,
-  CarrierStatus,
-  DrugMetabolism,
-  PhysicalTrait,
-  BeneficialVariant,
-  MetabolicTrait
+  calculateMetabolicTraits
 } from '../utils/healthCalculator';
+import type { AncestrySegment } from '../utils/csvParser';
+import { calculateAncestryPercentages } from '../utils/csvParser';
 
 interface HealthInsightsProps {
-  ancestryData: Record<string, number>;
+  segments: AncestrySegment[];
 }
 
-export default function HealthInsights({ ancestryData }: HealthInsightsProps) {
+export default function HealthInsights({ segments }: HealthInsightsProps) {
+  const ancestryData = useMemo(() => calculateAncestryPercentages(segments), [segments]);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     disclaimer: true,
     healthRisks: true,

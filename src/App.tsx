@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Info, Search, Dna, Globe2, Activity, LogOut, Heart, Users, ChevronDown } from 'lucide-react'
+import { Info, Search, Dna, Globe2, Activity, LogOut, Users, ChevronDown } from 'lucide-react'
 import { parseAncestryCSV, groupByChromosome, calculateAncestryPercentages, type AncestrySegment } from './utils/csvParser'
 import { ChromosomeVisualization } from './components/ChromosomeVisualization'
 import { AncestryPieChart } from './components/AncestryPieChart'
 import { AncestryExplorer } from './components/AncestryExplorer'
 import { MigrationGlobe } from './components/MigrationGlobe'
-import { DNAHelix } from './components/DNAHelix'
+import DNAHelix from './components/DNAHelix'
 import { ChromosomeViewer3D } from './components/ChromosomeViewer3D'
-import { AncestryParticleFlow } from './components/AncestryParticleFlow'
-import { HealthInsights } from './components/HealthInsights'
-import { HaploGroupPredictor } from './components/HaploGroupPredictor'
+import AncestryParticleFlow from './components/AncestryParticleFlow'
+import HealthInsights from './components/HealthInsights'
+import HaploGroupPredictor from './components/HaploGroupPredictor'
 import { useAuth } from './contexts/AuthContext'
 import './App.css'
 
@@ -82,7 +82,7 @@ function App() {
     return segments.filter(s => s.ancestry === ancestry)
   }
   
-  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
   
@@ -321,7 +321,6 @@ function App() {
                       <ChromosomeViewer3D
                         segments={segments}
                         selectedChromosome={selectedChromosome || undefined}
-                        onChromosomeClick={(chr) => setSelectedChromosome(chr)}
                       />
                     )}
                     {activeVisualization === 'particles' && (

@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useMemo } from 'react'
 import Globe from 'react-globe.gl'
-import { Calendar, Info, Users, TrendingUp } from 'lucide-react'
+import { Calendar, Info, Users } from 'lucide-react'
 import { type AncestrySegment } from '../utils/csvParser'
 
 interface MigrationGlobeProps {
@@ -156,7 +156,7 @@ const TIMELINE_EVENTS: TimelineEvent[] = [
 ]
 
 export function MigrationGlobe({ segments, selectedAncestry, onCountryClick }: MigrationGlobeProps) {
-  const globeEl = useRef<any>()
+  const globeEl = useRef<any>(null)
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null)
   const [timelineYear, setTimelineYear] = useState<number>(2020)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -256,7 +256,6 @@ export function MigrationGlobe({ segments, selectedAncestry, onCountryClick }: M
     <div className="relative w-full h-[800px] bg-slate-900 rounded-3xl overflow-hidden">
       {/* Globe */}
       <Globe
-        ref={globeEl}
         globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
         backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
         

@@ -71,7 +71,7 @@ const DNAStrand: React.FC<{
     return pos;
   }, [radius, height, isLeft, sphereCount]);
 
-  useFrame((state) => {
+  useFrame(() => {
     if (!meshRef.current) return;
     
     positions.forEach((pos, i) => {
@@ -153,8 +153,8 @@ const BasePairs: React.FC<{
             <mesh position={[Math.cos(angle1) * radius, 0, Math.sin(angle1) * radius]}>
               <sphereGeometry args={[0.1, 8, 8]} />
               <meshStandardMaterial 
-                color={BASE_PAIR_COLORS[pair.type][pair.type === 'AT' ? 'A' : 'G']}
-                emissive={BASE_PAIR_COLORS[pair.type][pair.type === 'AT' ? 'A' : 'G']}
+                color={pair.type === 'AT' ? BASE_PAIR_COLORS.AT.A : BASE_PAIR_COLORS.GC.G}
+                emissive={pair.type === 'AT' ? BASE_PAIR_COLORS.AT.A : BASE_PAIR_COLORS.GC.G}
                 emissiveIntensity={isHighlighted ? 1 : 0.3}
               />
             </mesh>
@@ -163,8 +163,8 @@ const BasePairs: React.FC<{
             <mesh position={[Math.cos(angle2) * radius, 0, Math.sin(angle2) * radius]}>
               <sphereGeometry args={[0.1, 8, 8]} />
               <meshStandardMaterial 
-                color={BASE_PAIR_COLORS[pair.type][pair.type === 'AT' ? 'T' : 'C']}
-                emissive={BASE_PAIR_COLORS[pair.type][pair.type === 'AT' ? 'T' : 'C']}
+                color={pair.type === 'AT' ? BASE_PAIR_COLORS.AT.T : BASE_PAIR_COLORS.GC.C}
+                emissive={pair.type === 'AT' ? BASE_PAIR_COLORS.AT.T : BASE_PAIR_COLORS.GC.C}
                 emissiveIntensity={isHighlighted ? 1 : 0.3}
               />
             </mesh>
@@ -261,7 +261,7 @@ const DNAHelixVisualization: React.FC<{
   const groupRef = useRef<THREE.Group>(null);
   const { mouse } = useThree();
   
-  useFrame((state) => {
+  useFrame(() => {
     if (!groupRef.current) return;
     
     // Auto rotation
@@ -318,7 +318,6 @@ const DNAHelixVisualization: React.FC<{
 // Main Component
 const DNAHelix: React.FC<DNAHelixProps> = ({ 
   ancestrySegments = [], 
-  autoRotate = true, 
   interactive = true 
 }) => {
   const [highlightedSegment, setHighlightedSegment] = useState<{ start: number; end: number } | undefined>();

@@ -1,15 +1,10 @@
-import React, { useRef, useState, useMemo, useEffect } from 'react'
+import { useRef, useState, useMemo, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { 
   OrbitControls, 
-  Text, 
   Html, 
   Environment,
   Float,
-  useTexture,
-  Instances,
-  Instance,
-  MeshTransmissionMaterial,
   PerformanceMonitor
 } from '@react-three/drei'
 import { 
@@ -26,7 +21,6 @@ import { useControls } from 'leva'
 
 interface ChromosomeViewer3DProps {
   segments: AncestrySegment[]
-  onChromosomeSelect?: (chromosome: string) => void
   selectedChromosome?: string | null
 }
 
@@ -76,20 +70,6 @@ const ANCESTRY_COLORS: Record<string, string> = {
   'Unassigned': '#D3D3D3'
 }
 
-// Banding pattern generator for realistic chromosome appearance
-function generateBandingPattern(length: number): Array<{ start: number; end: number; intensity: number }> {
-  const bands = []
-  const bandCount = Math.floor(length / 10000000) + 5
-  
-  for (let i = 0; i < bandCount; i++) {
-    const start = (i / bandCount) * length
-    const end = ((i + 1) / bandCount) * length
-    const intensity = Math.sin(i * 0.5) * 0.3 + 0.7
-    bands.push({ start, end, intensity })
-  }
-  
-  return bands
-}
 
 // Single chromosome component
 function Chromosome({ 
@@ -127,7 +107,7 @@ function Chromosome({
     return density
   }, [segments, data.length])
 
-  useFrame((state) => {
+  useFrame(() => {
     if (meshRef.current) {
       if (isSelected) {
         meshRef.current.rotation.y += 0.005
@@ -258,7 +238,6 @@ function Chromosome({
 // Main 3D scene component
 function ChromosomeScene({ 
   segments, 
-  onChromosomeSelect,
   selectedChromosome 
 }: ChromosomeViewer3DProps) {
   const [quality, setQuality] = useState<'low' | 'medium' | 'high'>('high')
@@ -340,7 +319,7 @@ function ChromosomeScene({
           position={position}
           segments={segmentsByChromosome[data.id] || []}
           isSelected={selectedChromosome === data.id}
-          onSelect={() => onChromosomeSelect?.(data.id)}
+          onSelect={() => {}}
           quality={quality}
         />
       ))}
@@ -378,7 +357,6 @@ function ChromosomeScene({
 // Main component
 export function ChromosomeViewer3D({ 
   segments, 
-  onChromosomeSelect,
   selectedChromosome 
 }: ChromosomeViewer3DProps) {
   const [showLegend, setShowLegend] = useState(true)
@@ -412,7 +390,6 @@ export function ChromosomeViewer3D({
       >
         <ChromosomeScene
           segments={segments}
-          onChromosomeSelect={onChromosomeSelect}
           selectedChromosome={selectedChromosome}
         />
       </Canvas>

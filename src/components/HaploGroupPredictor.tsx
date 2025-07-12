@@ -1,39 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useState, useEffect, useMemo } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Info, MapPin, Clock, Dna, Users, Globe2 } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { 
-  ComposableMap, 
-  Geographies, 
-  Geography, 
-  Marker, 
-  Line,
-  ZoomableGroup
-} from 'react-simple-maps';
-import { scaleTime } from 'd3-scale';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { Progress } from './ui/progress';
+import { Badge } from './ui/badge';
+import type { 
+  HaplogroupPrediction as HaploGroupPrediction,
+  HaplogroupData as HaploGroupData 
+} from '../utils/haploGroupPredictor';
 import { 
   predictHaplogroups, 
-  haplogroupTimeline, 
-  HaplogroupPrediction,
-  HaplogroupData 
-} from '@/utils/haploGroupPredictor';
+  haplogroupTimeline
+} from '../utils/haploGroupPredictor';
+import type { AncestrySegment } from '../utils/csvParser';
+import { calculateAncestryPercentages } from '../utils/csvParser';
 
 interface HaploGroupPredictorProps {
-  ancestryData: Record<string, number>;
+  segments: AncestrySegment[];
   gender?: 'male' | 'female' | 'unknown';
 }
 
 const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
 const HaploGroupPredictor: React.FC<HaploGroupPredictorProps> = ({ 
-  ancestryData, 
+  segments, 
   gender = 'unknown' 
 }) => {
-  const [predictions, setPredictions] = useState<HaplogroupData | null>(null);
-  const [selectedHaplogroup, setSelectedHaplogroup] = useState<HaplogroupPrediction | null>(null);
+  const ancestryData = useMemo(() => calculateAncestryPercentages(segments), [segments]);
+  const [predictions, setPredictions] = useState<HaploGroupData | null>(null);
+  const [selectedHaplogroup, setSelectedHaplogroup] = useState<HaploGroupPrediction | null>(null);
   const [activeTab, setActiveTab] = useState(gender === 'female' ? 'mtDNA' : 'yDNA');
 
   useEffect(() => {
@@ -108,70 +104,24 @@ const HaploGroupPredictor: React.FC<HaploGroupPredictorProps> = ({
     );
   };
 
-  const MigrationMap = ({ haplogroup }: { haplogroup: HaplogroupPrediction }) => {
+  const MigrationMap = ({ haplogroup }: { haplogroup: HaploGroupPrediction }) => {
     return (
-      <div className="w-full h-96 bg-gray-50 rounded-lg overflow-hidden">
-        <ComposableMap projection="geoNaturalEarth1">
-          <ZoomableGroup zoom={1}>
-            <Geographies geography={geoUrl}>
-              {({ geographies }) =>
-                geographies.map((geo) => (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill="#E5E7EB"
-                    stroke="#D1D5DB"
-                    strokeWidth={0.5}
-                  />
-                ))
-              }
-            </Geographies>
-            
-            {/* Migration path */}
-            {haplogroup.migrationPath.length > 1 && (
-              <>
-                {/* Draw lines between points */}
-                {haplogroup.migrationPath.slice(0, -1).map((point, index) => {
-                  const nextPoint = haplogroup.migrationPath[index + 1];
-                  return (
-                    <Line
-                      key={`line-${index}`}
-                      from={point.coordinates}
-                      to={nextPoint.coordinates}
-                      stroke={getColorForAge(point.yearsAgo)}
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeOpacity={0.8}
-                    />
-                  );
-                })}
-                
-                {/* Draw markers */}
-                {haplogroup.migrationPath.map((point, index) => (
-                  <Marker key={`marker-${index}`} coordinates={point.coordinates}>
-                    <circle
-                      r={6}
-                      fill={getColorForAge(point.yearsAgo)}
-                      stroke="#fff"
-                      strokeWidth={2}
-                    />
-                    <text
-                      textAnchor="middle"
-                      y={-10}
-                      style={{ 
-                        fontSize: '12px', 
-                        fill: '#374151',
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      {point.location}
-                    </text>
-                  </Marker>
-                ))}
-              </>
-            )}
-          </ZoomableGroup>
-        </ComposableMap>
+      <div className="w-full h-96 bg-gradient-to-b from-blue-100 to-blue-200 rounded-lg overflow-hidden relative">
+        <div className="absolute inset-0 p-4">
+          <h4 className="text-sm font-semibold text-gray-700 mb-2">Migration Path</h4>
+          <div className="space-y-2">
+            {haplogroup.migrationPath.map((point, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <div 
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: getColorForAge(point.yearsAgo) }}
+                />
+                <span className="text-sm text-gray-600">
+                  {point.location} ({Math.round(point.yearsAgo / 1000)}k years ago)
+                </span>
+              </div>
+            ))}
+          </div>
       </div>
     );
   };
@@ -180,7 +130,7 @@ const HaploGroupPredictor: React.FC<HaploGroupPredictorProps> = ({
     haplogroup, 
     type 
   }: { 
-    haplogroup: HaplogroupPrediction; 
+    haplogroup: HaploGroupPrediction; 
     type: 'yDNA' | 'mtDNA' 
   }) => {
     const isSelected = selectedHaplogroup?.haplogroup === haplogroup.haplogroup;

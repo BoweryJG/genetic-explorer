@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame, extend, useThree } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Effects } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { shaderMaterial } from '@react-three/drei';
 
@@ -126,7 +126,7 @@ const ParticleSystem: React.FC<ParticleSystemProps> = ({
 }) => {
   const meshRef = useRef<THREE.Points>(null);
   const materialRef = useRef<any>(null);
-  const { camera } = useThree();
+  const { } = useThree();
 
   // Generate particle attributes
   const particles = useMemo(() => {
@@ -226,8 +226,10 @@ const ParticleSystem: React.FC<ParticleSystemProps> = ({
   return (
     <points ref={meshRef}>
       <bufferGeometry />
-      <particleShaderMaterial
+      <primitive 
+        object={new ParticleShaderMaterial()}
         ref={materialRef}
+        attach="material"
         size={50}
         transparent
         depthWrite={false}
@@ -286,7 +288,7 @@ const AncestryParticleFlow: React.FC<AncestryParticleFlowProps> = ({
         }}
       >
         <color attach="background" args={['#000011']} />
-        <fog attach="fog" color="#000011" near={10} far={100} />
+        <fog attach="fog" args={['#000011', 10, 100]} />
         
         <ambientLight intensity={0.2} />
         <pointLight position={[10, 10, 10]} intensity={0.5} />
