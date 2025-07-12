@@ -10,13 +10,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-three/drei": "^10.5.0",
+    "@react-three/fiber": "^9.2.0",
+    "@react-three/postprocessing": "^3.0.4",
     "@supabase/supabase-js": "^2.50.5",
     "@tanstack/react-query": "^5.83.0",
+    "@visx/visx": "^3.12.0",
     "axios": "^1.10.0",
+    "framer-motion": "^12.23.3",
+    "leva": "^0.10.0",
     "lucide-react": "^0.525.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "recharts": "^3.1.0"
+    "react-globe.gl": "^2.34.0",
+    "recharts": "^3.1.0",
+    "three": "^0.178.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
