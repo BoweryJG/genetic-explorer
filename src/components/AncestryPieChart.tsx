@@ -34,9 +34,9 @@ export function AncestryPieChart({ data, onSegmentClick }: AncestryPieChartProps
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-2 border border-gray-200 rounded shadow">
-          <p className="font-semibold">{payload[0].name}</p>
-          <p className="text-sm">{payload[0].value}%</p>
+        <div className="bg-black/80 backdrop-blur-md p-3 border border-white/20 rounded-lg shadow-xl">
+          <p className="font-semibold text-white">{payload[0].name}</p>
+          <p className="text-purple-300">{payload[0].value}%</p>
         </div>
       )
     }
@@ -44,8 +44,8 @@ export function AncestryPieChart({ data, onSegmentClick }: AncestryPieChartProps
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-bold mb-4">Ancestry Composition</h2>
+    <div>
+      <h2 className="text-2xl font-bold mb-6 text-white">Ancestry Composition</h2>
       
       <ResponsiveContainer width="100%" height={400}>
         <PieChart>
@@ -54,7 +54,7 @@ export function AncestryPieChart({ data, onSegmentClick }: AncestryPieChartProps
             cx="50%"
             cy="50%"
             labelLine={false}
-            label={({ name, value }) => value && value > 2 ? `${name}: ${value}%` : ''}
+            label={({ value }) => value && value > 2 ? `${value}%` : ''}
             outerRadius={120}
             fill="#8884d8"
             dataKey="value"
@@ -72,19 +72,19 @@ export function AncestryPieChart({ data, onSegmentClick }: AncestryPieChartProps
         </PieChart>
       </ResponsiveContainer>
 
-      <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+      <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
         {chartData.map((item) => (
           <div 
             key={item.name} 
-            className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+            className="flex items-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 p-2 rounded-lg transition-colors"
             onClick={() => onSegmentClick?.(item.name)}
           >
             <div 
               className="w-4 h-4 rounded"
               style={{ backgroundColor: ANCESTRY_COLORS[item.name] || '#999' }}
             />
-            <span className="flex-1">{item.name}</span>
-            <span className="font-semibold">{item.value}%</span>
+            <span className="flex-1 text-purple-200">{item.name}</span>
+            <span className="font-semibold text-white">{item.value}%</span>
           </div>
         ))}
       </div>

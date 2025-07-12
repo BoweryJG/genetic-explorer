@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { Upload, Info, Search } from 'lucide-react'
+import { Upload, Info, Search, Dna, Globe2, Activity } from 'lucide-react'
 import { parseAncestryCSV, groupByChromosome, calculateAncestryPercentages, type AncestrySegment } from './utils/csvParser'
 import { ChromosomeVisualization } from './components/ChromosomeVisualization'
 import { AncestryPieChart } from './components/AncestryPieChart'
@@ -45,110 +45,151 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="backdrop-blur-md bg-black/20 border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Search className="w-6 h-6 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">Genetic Heritage Explorer</h1>
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+                <Dna className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-white">Genetic Heritage Explorer</h1>
+                <p className="text-purple-200 text-sm">Decode your ancestry with AI-powered insights</p>
+              </div>
             </div>
-            <div className="text-sm text-gray-600">
-              Powered by Supabase & Brave Search
+            <div className="flex items-center gap-2 text-purple-200">
+              <Activity className="w-4 h-4" />
+              <span className="text-sm">Powered by Brave Search</span>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {segments.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <Upload className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Upload Your 23andMe Data</h2>
-            <p className="text-gray-600 mb-6">
-              Upload your ancestry_composition CSV file to explore your genetic heritage
-            </p>
-            <label className="cursor-pointer">
-              <input
-                type="file"
-                accept=".csv"
-                onChange={handleFileUpload}
-                className="hidden"
-                disabled={isLoading}
-              />
-              <span className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                {isLoading ? 'Processing...' : 'Choose File'}
-              </span>
-            </label>
-            {error && (
-              <div className="mt-4 p-3 bg-red-50 text-red-700 rounded">
-                {error}
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="backdrop-blur-md bg-white/10 rounded-3xl p-12 text-center max-w-2xl w-full border border-white/20 shadow-2xl">
+              <div className="mb-8 relative inline-block">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-3xl opacity-50"></div>
+                <div className="relative bg-gradient-to-br from-purple-500 to-pink-500 rounded-full p-6">
+                  <Upload className="w-16 h-16 text-white" />
+                </div>
               </div>
-            )}
+              
+              <h2 className="text-3xl font-bold text-white mb-4">Upload Your Genetic Data</h2>
+              <p className="text-purple-200 mb-8 text-lg">
+                Drop your 23andMe ancestry composition CSV file to begin exploring your genetic heritage
+              </p>
+              
+              <label className="cursor-pointer group">
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  disabled={isLoading}
+                />
+                <span className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105 group-hover:from-purple-500 group-hover:to-pink-500">
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-5 h-5" />
+                      Choose File
+                    </>
+                  )}
+                </span>
+              </label>
+              
+              {error && (
+                <div className="mt-6 p-4 bg-red-500/20 backdrop-blur-md border border-red-500/50 text-red-200 rounded-xl">
+                  {error}
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           <div className="space-y-8">
-            {/* Overview Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <AncestryPieChart 
-                data={ancestryPercentages}
-                onSegmentClick={setSelectedAncestry}
-              />
-              
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-bold mb-4">Quick Stats</h2>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-gray-600">Total Segments</span>
-                    <span className="font-semibold">{segments.length}</span>
+            {/* Hero Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+              {[
+                { label: 'Total Segments', value: segments.length, icon: Globe2 },
+                { label: 'Unique Ancestries', value: Object.keys(ancestryPercentages).length, icon: Dna },
+                { label: 'Chromosomes', value: chromosomes.length, icon: Activity },
+                { label: 'Primary Ancestry', value: Object.entries(ancestryPercentages).sort((a, b) => b[1] - a[1])[0]?.[0], icon: Search }
+              ].map((stat, idx) => (
+                <div key={idx} className="backdrop-blur-md bg-white/10 rounded-2xl p-6 border border-white/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-purple-200">{stat.label}</p>
+                    <stat.icon className="w-5 h-5 text-purple-400" />
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-gray-600">Unique Ancestries</span>
-                    <span className="font-semibold">{Object.keys(ancestryPercentages).length}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-gray-600">Chromosomes Analyzed</span>
-                    <span className="font-semibold">{chromosomes.length}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-gray-600">Primary Ancestry</span>
-                    <span className="font-semibold">
-                      {Object.entries(ancestryPercentages).sort((a, b) => b[1] - a[1])[0]?.[0]}
-                    </span>
-                  </div>
+                  <p className="text-3xl font-bold text-white">{stat.value}</p>
                 </div>
-                
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                  <div className="flex items-start gap-2">
-                    <Info className="w-5 h-5 text-blue-600 mt-0.5" />
-                    <div className="text-sm text-blue-800">
-                      <p className="font-semibold mb-1">Pro Tip</p>
-                      <p>Click on any ancestry in the pie chart to explore detailed insights, historical context, and research papers about that heritage.</p>
+              ))}
+            </div>
+
+            {/* Main Visualization Area */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Pie Chart */}
+              <div className="backdrop-blur-md bg-white/10 rounded-3xl p-8 border border-white/20">
+                <AncestryPieChart 
+                  data={ancestryPercentages}
+                  onSegmentClick={setSelectedAncestry}
+                />
+              </div>
+              
+              {/* Insights Panel */}
+              <div className="backdrop-blur-md bg-white/10 rounded-3xl p-8 border border-white/20">
+                <h2 className="text-2xl font-bold text-white mb-6">Genetic Insights</h2>
+                <div className="space-y-4">
+                  <div className="p-4 bg-purple-500/20 rounded-xl border border-purple-500/30">
+                    <div className="flex items-start gap-3">
+                      <Info className="w-5 h-5 text-purple-400 mt-0.5" />
+                      <div>
+                        <p className="font-semibold text-purple-200 mb-1">Interactive Exploration</p>
+                        <p className="text-purple-300 text-sm">Click any ancestry in the chart to dive deep into your genetic heritage, historical migrations, and unique traits.</p>
+                      </div>
                     </div>
                   </div>
+                  
+                  {selectedAncestry && (
+                    <div className="p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl border border-white/20">
+                      <p className="text-sm text-purple-200 mb-1">Currently Exploring</p>
+                      <p className="text-xl font-bold text-white">{selectedAncestry}</p>
+                      <p className="text-purple-300 text-sm mt-1">
+                        {(ancestryPercentages[selectedAncestry] || 0).toFixed(2)}% of your genome
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Selected Ancestry Explorer */}
             {selectedAncestry && (
-              <AncestryExplorer
-                ancestry={selectedAncestry}
-                segments={getSegmentsByAncestry(selectedAncestry)}
-                braveApiKey={import.meta.env.VITE_BRAVE_API_KEY}
-              />
+              <div className="backdrop-blur-md bg-white/10 rounded-3xl p-8 border border-white/20">
+                <AncestryExplorer
+                  ancestry={selectedAncestry}
+                  segments={getSegmentsByAncestry(selectedAncestry)}
+                  braveApiKey={import.meta.env.VITE_BRAVE_API_KEY}
+                />
+              </div>
             )}
 
-            {/* Chromosome Visualizations */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-bold mb-4">Chromosome Browser</h2>
-              <div className="mb-4">
+            {/* Chromosome Browser */}
+            <div className="backdrop-blur-md bg-white/10 rounded-3xl p-8 border border-white/20">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-white">Chromosome Browser</h2>
                 <select
                   value={selectedChromosome || ''}
                   onChange={(e) => setSelectedChromosome(e.target.value || null)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 backdrop-blur-md"
                 >
                   <option value="">All Chromosomes</option>
                   {chromosomes.map(chr => (
@@ -157,7 +198,7 @@ function App() {
                 </select>
               </div>
               
-              <div className="space-y-4 max-h-96 overflow-y-auto">
+              <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                 {(selectedChromosome ? [selectedChromosome] : chromosomes).map(chr => (
                   <ChromosomeVisualization
                     key={chr}

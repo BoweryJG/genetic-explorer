@@ -73,17 +73,17 @@ export function ChromosomeVisualization({
   const copy2Segments = sortedSegments.filter(s => s.copyNumber === 2)
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4">
-      <h3 className="text-lg font-semibold mb-2">{chromosome}</h3>
+    <div className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-colors">
+      <h3 className="text-lg font-semibold mb-2 text-white">{chromosome}</h3>
       
-      <svg width={width} height={height} className="border border-gray-200 rounded">
+      <svg width={width} height={height} className="w-full">
         {/* Chromosome background */}
         <rect
           x={0}
           y={20}
           width={width}
           height={25}
-          fill="#f0f0f0"
+          fill="rgba(255,255,255,0.1)"
           rx={12}
         />
         <rect
@@ -91,7 +91,7 @@ export function ChromosomeVisualization({
           y={55}
           width={width}
           height={25}
-          fill="#f0f0f0"
+          fill="rgba(255,255,255,0.1)"
           rx={12}
         />
 
@@ -138,8 +138,8 @@ export function ChromosomeVisualization({
         ))}
 
         {/* Labels */}
-        <text x={5} y={15} className="text-xs fill-gray-600">Copy 1</text>
-        <text x={5} y={50} className="text-xs fill-gray-600">Copy 2</text>
+        <text x={5} y={15} className="text-xs fill-purple-300">Copy 1</text>
+        <text x={5} y={50} className="text-xs fill-purple-300">Copy 2</text>
       </svg>
 
       {/* Legend */}
@@ -147,10 +147,10 @@ export function ChromosomeVisualization({
         {Array.from(new Set(segments.map(s => s.ancestry))).map(ancestry => (
           <div key={ancestry} className="flex items-center gap-1">
             <div 
-              className="w-4 h-4 rounded"
+              className="w-3 h-3 rounded"
               style={{ backgroundColor: ANCESTRY_COLORS[ancestry] || '#999' }}
             />
-            <span className="text-xs text-gray-600">{ancestry}</span>
+            <span className="text-xs text-purple-300">{ancestry}</span>
           </div>
         ))}
       </div>

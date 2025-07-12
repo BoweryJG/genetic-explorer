@@ -55,17 +55,17 @@ export function AncestryExplorer({ ancestry, segments, braveApiKey }: AncestryEx
   const insights = getAncestryInsights(ancestry)
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">{ancestry} Ancestry Explorer</h2>
+    <div>
+      <h2 className="text-2xl font-bold mb-6 text-white">{ancestry} Ancestry Explorer</h2>
 
       {/* Tabs */}
-      <div className="flex gap-4 border-b border-gray-200 mb-6">
+      <div className="flex gap-4 border-b border-white/20 mb-6">
         <button
           onClick={() => setActiveTab('overview')}
-          className={`pb-2 px-1 flex items-center gap-2 ${
+          className={`pb-3 px-1 flex items-center gap-2 transition-colors ${
             activeTab === 'overview' 
-              ? 'border-b-2 border-blue-500 text-blue-600' 
-              : 'text-gray-600 hover:text-gray-800'
+              ? 'border-b-2 border-purple-500 text-white' 
+              : 'text-purple-300 hover:text-white'
           }`}
         >
           <Globe className="w-4 h-4" />
@@ -73,10 +73,10 @@ export function AncestryExplorer({ ancestry, segments, braveApiKey }: AncestryEx
         </button>
         <button
           onClick={() => setActiveTab('genetics')}
-          className={`pb-2 px-1 flex items-center gap-2 ${
+          className={`pb-3 px-1 flex items-center gap-2 transition-colors ${
             activeTab === 'genetics' 
-              ? 'border-b-2 border-blue-500 text-blue-600' 
-              : 'text-gray-600 hover:text-gray-800'
+              ? 'border-b-2 border-purple-500 text-white' 
+              : 'text-purple-300 hover:text-white'
           }`}
         >
           <Dna className="w-4 h-4" />
@@ -84,10 +84,10 @@ export function AncestryExplorer({ ancestry, segments, braveApiKey }: AncestryEx
         </button>
         <button
           onClick={() => setActiveTab('history')}
-          className={`pb-2 px-1 flex items-center gap-2 ${
+          className={`pb-3 px-1 flex items-center gap-2 transition-colors ${
             activeTab === 'history' 
-              ? 'border-b-2 border-blue-500 text-blue-600' 
-              : 'text-gray-600 hover:text-gray-800'
+              ? 'border-b-2 border-purple-500 text-white' 
+              : 'text-purple-300 hover:text-white'
           }`}
         >
           <History className="w-4 h-4" />
@@ -95,10 +95,10 @@ export function AncestryExplorer({ ancestry, segments, braveApiKey }: AncestryEx
         </button>
         <button
           onClick={() => setActiveTab('traits')}
-          className={`pb-2 px-1 flex items-center gap-2 ${
+          className={`pb-3 px-1 flex items-center gap-2 transition-colors ${
             activeTab === 'traits' 
-              ? 'border-b-2 border-blue-500 text-blue-600' 
-              : 'text-gray-600 hover:text-gray-800'
+              ? 'border-b-2 border-purple-500 text-white' 
+              : 'text-purple-300 hover:text-white'
           }`}
         >
           <TrendingUp className="w-4 h-4" />
@@ -111,35 +111,35 @@ export function AncestryExplorer({ ancestry, segments, braveApiKey }: AncestryEx
         {activeTab === 'overview' && (
           <div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Total Segments</p>
-                <p className="text-2xl font-bold">{segments.length}</p>
+              <div className="bg-purple-500/20 backdrop-blur-sm p-4 rounded-xl border border-purple-500/30">
+                <p className="text-sm text-purple-300">Total Segments</p>
+                <p className="text-2xl font-bold text-white">{segments.length}</p>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Chromosomes</p>
-                <p className="text-2xl font-bold">{chromosomes.length}</p>
+              <div className="bg-purple-500/20 backdrop-blur-sm p-4 rounded-xl border border-purple-500/30">
+                <p className="text-sm text-purple-300">Chromosomes</p>
+                <p className="text-2xl font-bold text-white">{chromosomes.length}</p>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Total Length</p>
-                <p className="text-2xl font-bold">{(totalLength / 1_000_000).toFixed(1)}M bp</p>
+              <div className="bg-purple-500/20 backdrop-blur-sm p-4 rounded-xl border border-purple-500/30">
+                <p className="text-sm text-purple-300">Total Length</p>
+                <p className="text-2xl font-bold text-white">{(totalLength / 1_000_000).toFixed(1)}M bp</p>
               </div>
             </div>
             
-            <div className="prose max-w-none">
-              <h3 className="text-lg font-semibold mb-2">About {ancestry} Ancestry</h3>
-              <p className="text-gray-700">{insights.overview}</p>
+            <div className="prose prose-invert max-w-none">
+              <h3 className="text-lg font-semibold mb-2 text-white">About {ancestry} Ancestry</h3>
+              <p className="text-purple-200">{insights.overview}</p>
             </div>
           </div>
         )}
 
         {activeTab === 'genetics' && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Genetic Characteristics</h3>
-            <ul className="space-y-2">
+            <h3 className="text-lg font-semibold text-white">Genetic Characteristics</h3>
+            <ul className="space-y-3">
               {insights.genetics.map((item: string, idx: number) => (
-                <li key={idx} className="flex items-start gap-2">
-                  <Dna className="w-4 h-4 text-blue-500 mt-0.5" />
-                  <span className="text-gray-700">{item}</span>
+                <li key={idx} className="flex items-start gap-3 bg-white/5 p-3 rounded-lg">
+                  <Dna className="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-purple-200">{item}</span>
                 </li>
               ))}
             </ul>
@@ -148,24 +148,24 @@ export function AncestryExplorer({ ancestry, segments, braveApiKey }: AncestryEx
 
         {activeTab === 'history' && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Historical Context</h3>
-            <p className="text-gray-700">{insights.history}</p>
+            <h3 className="text-lg font-semibold text-white">Historical Context</h3>
+            <p className="text-purple-200">{insights.history}</p>
             
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-900 mb-2">Migration Patterns</h4>
-              <p className="text-blue-800">{insights.migration}</p>
+            <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 p-4 rounded-xl border border-white/20">
+              <h4 className="font-semibold text-white mb-2">Migration Patterns</h4>
+              <p className="text-purple-200">{insights.migration}</p>
             </div>
           </div>
         )}
 
         {activeTab === 'traits' && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Common Traits & Health Considerations</h3>
+            <h3 className="text-lg font-semibold text-white">Common Traits & Health Considerations</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {insights.traits.map((trait: Trait, idx: number) => (
-                <div key={idx} className="bg-gray-50 p-3 rounded">
-                  <p className="font-medium text-gray-800">{trait.category}</p>
-                  <p className="text-sm text-gray-600">{trait.description}</p>
+                <div key={idx} className="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition-colors">
+                  <p className="font-medium text-white mb-1">{trait.category}</p>
+                  <p className="text-sm text-purple-300">{trait.description}</p>
                 </div>
               ))}
             </div>
@@ -174,8 +174,8 @@ export function AncestryExplorer({ ancestry, segments, braveApiKey }: AncestryEx
 
         {/* Search Section */}
         {braveApiKey && (
-          <div className="border-t pt-6">
-            <h3 className="text-lg font-semibold mb-3">Research {ancestry} Ancestry</h3>
+          <div className="border-t border-white/20 pt-6">
+            <h3 className="text-lg font-semibold mb-3 text-white">Research {ancestry} Ancestry</h3>
             <div className="flex gap-2 mb-4">
               <input
                 type="text"
@@ -183,12 +183,12 @@ export function AncestryExplorer({ ancestry, segments, braveApiKey }: AncestryEx
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                 placeholder={`Search about ${ancestry} genetics, history, or culture...`}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-4 py-2 bg-white/10 border border-white/20 text-white placeholder-purple-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 backdrop-blur-md"
               />
               <button
                 onClick={handleSearch}
                 disabled={isSearching}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 flex items-center gap-2 transition-all"
               >
                 <Search className="w-4 h-4" />
                 {isSearching ? 'Searching...' : 'Search'}
@@ -198,16 +198,16 @@ export function AncestryExplorer({ ancestry, segments, braveApiKey }: AncestryEx
             {searchResults.length > 0 && (
               <div className="space-y-3">
                 {searchResults.map((result, idx) => (
-                  <div key={idx} className="border rounded-lg p-4 hover:bg-gray-50">
+                  <div key={idx} className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-colors">
                     <a 
                       href={result.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline font-medium"
+                      className="text-purple-300 hover:text-white font-medium"
                     >
                       {result.title}
                     </a>
-                    <p className="text-sm text-gray-600 mt-1">{result.description}</p>
+                    <p className="text-sm text-purple-400 mt-1">{result.description}</p>
                   </div>
                 ))}
               </div>
