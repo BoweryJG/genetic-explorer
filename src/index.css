@@ -22,6 +22,10 @@
   --neon-glow: rgba(0, 217, 255, 0.5);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

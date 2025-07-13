@@ -407,6 +407,54 @@
   }
 }
 
+/* Mobile Navigation Enhancements */
+.glass-deep header {
+  transition: all 0.3s ease;
+}
+
+/* Mobile-specific glass effects */
+@media (max-width: 640px) {
+  .glass-card,
+  .glass-iridescent,
+  .glass-neon,
+  .glass-deep,
+  .glass-holographic {
+    border-radius: 16px;
+    padding: 1rem;
+  }
+  
+  .glass-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  /* Reduce blur on mobile for performance */
+  @supports (-webkit-backdrop-filter: blur(15px)) or (backdrop-filter: blur(15px)) {
+    .glass-card,
+    .glass-iridescent,
+    .glass-neon,
+    .glass-deep,
+    .glass-holographic {
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+    }
+  }
+}
+
+/* Navigation dots - hide on mobile */
+@media (max-width: 1024px) {
+  .nav-dots {
+    display: none !important;
+  }
+}
+
+/* Text truncation for mobile */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Performance optimizations for lower-end devices */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Info, Search, Dna, Globe2, Activity, LogOut, Users, ChevronDown } from 'lucide-react'
+import { Info, Search, Dna, Globe2, Activity, LogOut, Users, ChevronDown, Menu, X } from 'lucide-react'
 import { parseAncestryCSV, groupByChromosome, calculateAncestryPercentages, type AncestrySegment } from './utils/csvParser'
 import { ChromosomeVisualization } from './components/ChromosomeVisualization'
 import { AncestryPieChart } from './components/AncestryPieChart'
@@ -23,6 +23,7 @@ function App() {
   const [activeVisualization, setActiveVisualization] = useState<'dna' | 'chromosomes' | 'particles'>('dna')
   const [geneticDiversityScore, setGeneticDiversityScore] = useState(0)
   const [neanderthalPercentage, setNeanderthalPercentage] = useState(0)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   
   // Refs for smooth scrolling
   const heroRef = useRef<HTMLDivElement>(null)
@@ -119,34 +120,132 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
-      <header className="glass-deep border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="glass-deep border-b border-white/10 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg glass-neon">
-                <Dna className="w-8 h-8 text-white" />
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="p-1.5 md:p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg glass-neon">
+                <Dna className="w-6 h-6 md:w-8 md:h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">Genetic Heritage Explorer</h1>
-                <p className="text-purple-200 text-sm">Decode your ancestry with AI-powered insights</p>
+                <h1 className="text-xl md:text-3xl font-bold text-white">Genetic Explorer</h1>
+                <p className="text-purple-200 text-xs md:text-sm hidden sm:block">Decode your ancestry with AI</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              {user ? (
+            
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-6">
+              {user && !isLoading && !error && (
                 <>
-                  <span className="text-purple-200 text-sm glass-badge">{user.email}</span>
+                  <button
+                    onClick={() => scrollToSection(visualizationsRef)}
+                    className="text-purple-200 hover:text-white transition-colors"
+                  >
+                    Visualizations
+                  </button>
+                  <button
+                    onClick={() => scrollToSection(healthRef)}
+                    className="text-purple-200 hover:text-white transition-colors"
+                  >
+                    Health Insights
+                  </button>
+                  <button
+                    onClick={() => scrollToSection(haploRef)}
+                    className="text-purple-200 hover:text-white transition-colors"
+                  >
+                    Haplogroups
+                  </button>
+                  <button
+                    onClick={() => scrollToSection(globeRef)}
+                    className="text-purple-200 hover:text-white transition-colors"
+                  >
+                    Migration Map
+                  </button>
+                </>
+              )}
+              {user && (
+                <div className="flex items-center gap-4 ml-4 pl-4 border-l border-white/10">
+                  <span className="text-purple-200 text-sm glass-badge hidden xl:block">{user.email}</span>
                   <button
                     onClick={signOut}
-                    className="glass-button flex items-center gap-2"
+                    className="glass-button flex items-center gap-2 text-sm"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden md:inline">Sign Out</span>
+                  </button>
+                </div>
+              )}
+            </nav>
+            
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden glass-button p-2"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+        
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden glass-deep border-t border-white/10">
+            <nav className="px-4 py-4 space-y-3">
+              {user && !isLoading && !error && (
+                <>
+                  <button
+                    onClick={() => {
+                      scrollToSection(visualizationsRef)
+                      setIsMobileMenuOpen(false)
+                    }}
+                    className="block w-full text-left text-purple-200 hover:text-white transition-colors py-2"
+                  >
+                    3D Visualizations
+                  </button>
+                  <button
+                    onClick={() => {
+                      scrollToSection(healthRef)
+                      setIsMobileMenuOpen(false)
+                    }}
+                    className="block w-full text-left text-purple-200 hover:text-white transition-colors py-2"
+                  >
+                    Health Insights
+                  </button>
+                  <button
+                    onClick={() => {
+                      scrollToSection(haploRef)
+                      setIsMobileMenuOpen(false)
+                    }}
+                    className="block w-full text-left text-purple-200 hover:text-white transition-colors py-2"
+                  >
+                    Haplogroups
+                  </button>
+                  <button
+                    onClick={() => {
+                      scrollToSection(globeRef)
+                      setIsMobileMenuOpen(false)
+                    }}
+                    className="block w-full text-left text-purple-200 hover:text-white transition-colors py-2"
+                  >
+                    Migration Map
+                  </button>
+                </>
+              )}
+              {user && (
+                <div className="pt-3 mt-3 border-t border-white/10">
+                  <div className="text-purple-200 text-sm mb-3">{user.email}</div>
+                  <button
+                    onClick={signOut}
+                    className="glass-button w-full flex items-center justify-center gap-2"
                   >
                     <LogOut className="w-4 h-4" />
                     Sign Out
                   </button>
-                </>
-              ) : null}
-            </div>
+                </div>
+              )}
+            </nav>
           </div>
-        </div>
+        )}
       </header>
 
       {/* Main Content */}
@@ -231,30 +330,30 @@ function App() {
             </div>
             
             {/* Hero Section with 3D DNA Helix Background */}
-            <div ref={heroRef} className="relative min-h-screen -mt-[104px] pt-[104px] overflow-hidden">
+            <div ref={heroRef} className="relative min-h-screen -mt-[72px] md:-mt-[88px] pt-[72px] md:pt-[88px] overflow-hidden">
               <div className="absolute inset-0 z-0">
                 <DNAHelix />
               </div>
               
               <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col justify-center">
-                <div className="text-center mb-12">
-                  <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
+                <div className="text-center mb-8 md:mb-12">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 md:mb-6 animate-fade-in">
                     Explore Your Genetic Story
                   </h1>
-                  <p className="text-xl md:text-2xl text-purple-200 mb-8 animate-fade-in-delay">
+                  <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-purple-200 mb-6 md:mb-8 animate-fade-in-delay px-4 sm:px-0">
                     Dive deep into your ancestry with AI-powered insights and stunning visualizations
                   </p>
                   <button
                     onClick={() => scrollToSection(visualizationsRef)}
-                    className="glass-button inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold"
+                    className="glass-button inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold"
                   >
                     Start Exploring
-                    <ChevronDown className="w-5 h-5 animate-bounce" />
+                    <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 animate-bounce" />
                   </button>
                 </div>
 
                 {/* Enhanced Stats Section */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-8 md:mb-12">
                   {[
                     { label: 'Total Segments', value: segments.length, icon: Globe2 },
                     { label: 'Unique Ancestries', value: Object.keys(ancestryPercentages).length, icon: Dna },
@@ -263,12 +362,12 @@ function App() {
                     { label: 'Genetic Diversity', value: `${geneticDiversityScore}%`, icon: Users },
                     { label: 'Neanderthal DNA', value: `${neanderthalPercentage}%`, icon: Dna }
                   ].map((stat, idx) => (
-                    <div key={idx} className="glass-card p-6 transform transition-all duration-200 hover:scale-105">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-purple-200 text-sm">{stat.label}</p>
-                        <stat.icon className="w-5 h-5 text-purple-400 chromosome-element" />
+                    <div key={idx} className="glass-card p-3 sm:p-4 md:p-6 transform transition-all duration-200 hover:scale-105">
+                      <div className="flex items-center justify-between mb-1 sm:mb-2">
+                        <p className="text-purple-200 text-xs sm:text-sm truncate pr-1">{stat.label}</p>
+                        <stat.icon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 chromosome-element flex-shrink-0" />
                       </div>
-                      <p className="text-2xl font-bold text-white">{stat.value}</p>
+                      <p className="text-lg sm:text-xl md:text-2xl font-bold text-white truncate">{stat.value}</p>
                     </div>
                   ))}
                 </div>
@@ -278,10 +377,10 @@ function App() {
             {/* Main Content Sections */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-20">
               {/* 3D Visualizations Section */}
-              <div ref={visualizationsRef} className="pt-20">
-                <div className="text-center mb-12">
-                  <h2 className="text-4xl font-bold text-white mb-4">Interactive 3D Visualizations</h2>
-                  <p className="text-xl text-purple-200">Explore your genetic data in stunning 3D</p>
+              <div ref={visualizationsRef} className="pt-16 md:pt-20">
+                <div className="text-center mb-8 md:mb-12">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">Interactive 3D Visualizations</h2>
+                  <p className="text-base sm:text-lg md:text-xl text-purple-200 px-4 sm:px-0">Explore your genetic data in stunning 3D</p>
                 </div>
 
                 {/* Visualization Tabs */}
@@ -306,7 +405,7 @@ function App() {
                 </div>
 
                 {/* Active Visualization */}
-                <div className="glass-deep h-[600px] relative overflow-hidden">
+                <div className="glass-deep h-[400px] sm:h-[500px] md:h-[600px] relative overflow-hidden">
                   <div className="dna-decorator" />
                   <React.Suspense fallback={
                     <div className="flex items-center justify-center h-full">
@@ -331,9 +430,9 @@ function App() {
               </div>
 
               {/* Ancestry Analysis Section */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
                 {/* Pie Chart */}
-                <div className="glass-card p-8">
+                <div className="glass-card p-4 sm:p-6 md:p-8">
                   <AncestryPieChart 
                     data={ancestryPercentages}
                     onSegmentClick={setSelectedAncestry}
@@ -341,7 +440,7 @@ function App() {
                 </div>
                 
                 {/* Selected Ancestry Explorer */}
-                <div className="glass-iridescent p-8">
+                <div className="glass-iridescent p-4 sm:p-6 md:p-8">
                   {selectedAncestry ? (
                     <AncestryExplorer
                       ancestry={selectedAncestry}
@@ -360,37 +459,37 @@ function App() {
               </div>
 
               {/* Health & Traits Section */}
-              <div ref={healthRef} className="pt-20">
-                <div className="text-center mb-12">
-                  <h2 className="text-4xl font-bold text-white mb-4">Health & Genetic Traits</h2>
-                  <p className="text-xl text-purple-200">Discover insights about your health predispositions and unique traits</p>
+              <div ref={healthRef} className="pt-16 md:pt-20">
+                <div className="text-center mb-8 md:mb-12">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">Health & Genetic Traits</h2>
+                  <p className="text-base sm:text-lg md:text-xl text-purple-200 px-4 sm:px-0">Discover insights about your health predispositions and unique traits</p>
                 </div>
                 
-                <div className="glass-deep p-8">
+                <div className="glass-deep p-4 sm:p-6 md:p-8">
                   <HealthInsights segments={segments} />
                 </div>
               </div>
 
               {/* Haplogroup Predictions Section */}
-              <div ref={haploRef} className="pt-20">
-                <div className="text-center mb-12">
-                  <h2 className="text-4xl font-bold text-white mb-4">Haplogroup Predictions</h2>
-                  <p className="text-xl text-purple-200">Trace your ancient maternal and paternal lineages</p>
+              <div ref={haploRef} className="pt-16 md:pt-20">
+                <div className="text-center mb-8 md:mb-12">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">Haplogroup Predictions</h2>
+                  <p className="text-base sm:text-lg md:text-xl text-purple-200 px-4 sm:px-0">Trace your ancient maternal and paternal lineages</p>
                 </div>
                 
-                <div className="glass-holographic p-8">
+                <div className="glass-holographic p-4 sm:p-6 md:p-8">
                   <HaploGroupPredictor segments={segments} />
                 </div>
               </div>
 
               {/* Migration Globe Section */}
-              <div ref={globeRef} className="pt-20">
-                <div className="text-center mb-12">
-                  <h2 className="text-4xl font-bold text-white mb-4">Global Migration Patterns</h2>
-                  <p className="text-xl text-purple-200">Explore the historical migration paths of your ancestors</p>
+              <div ref={globeRef} className="pt-16 md:pt-20">
+                <div className="text-center mb-8 md:mb-12">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">Global Migration Patterns</h2>
+                  <p className="text-base sm:text-lg md:text-xl text-purple-200 px-4 sm:px-0">Explore the historical migration paths of your ancestors</p>
                 </div>
                 
-                <div className="glass-neon p-8">
+                <div className="glass-neon p-4 sm:p-6 md:p-8">
                   <MigrationGlobe
                     segments={segments}
                     selectedAncestry={selectedAncestry}
@@ -402,19 +501,19 @@ function App() {
               </div>
 
               {/* Chromosome Browser */}
-              <div className="pt-20">
-                <div className="text-center mb-12">
-                  <h2 className="text-4xl font-bold text-white mb-4">Chromosome Browser</h2>
-                  <p className="text-xl text-purple-200">Explore your genetic segments across all chromosomes</p>
+              <div className="pt-16 md:pt-20">
+                <div className="text-center mb-8 md:mb-12">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">Chromosome Browser</h2>
+                  <p className="text-base sm:text-lg md:text-xl text-purple-200 px-4 sm:px-0">Explore your genetic segments across all chromosomes</p>
                 </div>
                 
-                <div className="glass-deep p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-white">Select Chromosome</h3>
+                <div className="glass-deep p-4 sm:p-6 md:p-8">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 gap-3">
+                    <h3 className="text-lg sm:text-xl font-semibold text-white">Select Chromosome</h3>
                     <select
                       value={selectedChromosome || ''}
                       onChange={(e) => setSelectedChromosome(e.target.value || null)}
-                      className="glass-input"
+                      className="glass-input w-full sm:w-auto"
                     >
                       <option value="">All Chromosomes</option>
                       {chromosomes.map(chr => (
@@ -423,7 +522,7 @@ function App() {
                     </select>
                   </div>
                   
-                  <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="space-y-4 max-h-[400px] sm:max-h-[500px] md:max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                     {(selectedChromosome ? [selectedChromosome] : chromosomes).map(chr => (
                       <ChromosomeVisualization
                         key={chr}
